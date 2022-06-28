@@ -14,6 +14,7 @@ import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
+import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
@@ -47,12 +48,16 @@ public class MainActivity extends AppCompatActivity {
         editText = findViewById(R.id.text);
         textView = findViewById(R.id.output);
 
-        String url = "http://175.207.128.71:5000/?a="+editText.getText().toString();
+
 //        String url = "https://www.naver.com/";
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                String url = "http://175.207.128.71:5000/?a="+editText.getText().toString();
+
                 httpRequest(url);
+                // Log.i("keywordText",editText.getText().toString());
                 Toast.makeText(MainActivity.this,url,Toast.LENGTH_SHORT).show();
             }
         });
@@ -76,6 +81,23 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         );
+
+        request.setRetryPolicy(new RetryPolicy() {
+            @Override
+            public int getCurrentTimeout() {
+                return 50000;
+            }
+
+            @Override
+            public int getCurrentRetryCount() {
+                return 50000;
+            }
+
+            @Override
+            public void retry(VolleyError error) throws VolleyError {
+
+            }
+        });
 
         request.setShouldCache(false);
         requestQueue.add(request);
